@@ -2,7 +2,7 @@
 
 競馬のシミュレーションしたくアルゴリズムを考えていたところ、これを使ってゲームが作れるのではないかと思いました。
 
-### ➤ [ゲームをプレイする](https://[Yuhosyd].github.io/[keiba-card-game]/)
+### ➤ [ゲームをプレイする](https://Yuhosyd.github.io/keiba-card-game/)
 (↑ GitHub Pagesで公開したゲームのURLをここに貼り付けてください)
 
 ---

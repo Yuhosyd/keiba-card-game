@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>RaceHorceTactics</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="images/favicon.png" type="image/png">
+</head>
+<body>
+<div id="title-screen">
+        <h1>RaceHorceTactics</h1>
+        <p>これは、架空の馬たちによるカードバトルゲームです。<br>手札から1枚を選び、CPUと勝負しよう！</p>
+        <button id="game-start-button">ゲーム開始</button>
+    </div>
+
+<div id="game-screen" class="hidden">
+
+    <div id="left-column">
+        <button id="drawer-toggle-button">▶</button>
+        <div id="player-list-container">
+            <div class="player-status-entry is-player">あなた: 15,000,000 円</div>
+            <div class="player-status-entry">CPU 1: 15,000,000 円</div>
+            <div class="player-status-entry">CPU 2: 15,000,000 円</div>
+            <div class="player-status-entry">CPU 3: 15,000,000 円</div>
+            </div>
+    </div>
+
+    <div id="center-column">
+        <h1 class="game-title">RaceHorseTactics</h1>
+        <div id="turn-display">Turn: <span id="turn-counter">1</span> / 8</div>
+        <hr>
+        <h2 id="corse-title"></h2>
+        <div id="battle-field" class="field-container"></div>
+        <h2 id="result-area"></h2>
+
+        <div id="full-ranking-container" class="hidden">
+            <h3>全着順</h3>
+            <ul id="full-ranking-list"></ul>
+        </div>
+
+        <div class="game-over-buttons">
+
+
+            <div id="tactics-selection-area" class="hidden">
+            <button id="tactics-button">戦術を指示</button>
+                <div id="tactics-choices" class="hidden">
+                    <button class="tactic-choice-button" data-tactic="nige">逃げ</button>
+                    <button class="tactic-choice-button" data-tactic="senkou">先行</button>
+                    <button class="tactic-choice-button" data-tactic="sashi">差し</button>
+                    <button class="tactic-choice-button" data-tactic="makuri">捲り</button>
+                    <button class="tactic-choice-button" data-tactic="oikomi">追込</button>
+                </div>
+            </div>
+
+
+            <button id="play-button">この馬で挑戦</button>
+            <button id="pass-button">今回は見送る</button>
+            <button id="startButton">次のレースへ</button>
+            <button id="toggle-ranking-button" >全着順を見る</button>
+            <button id="end-game-button" class="hidden">タイトルへ戻る</button>
+        </div>
+    </div>
+
+    <div id="right-column">
+        <button id="drawer-toggle-button-right">◀</button> <div id="score-preview-container">
+            <h3>Performance</h3>
+            <div id="score-preview">--</div>
+        </div>
+        <div class="player-hand-wrapper">
+            <div class="hand-title-area">
+               <h2>Barn</h2>
+               <div id="selected-card-info"></div>
+            </div>
+            <div id="player-hand" class="hand-area"></div>
+        </div>
+    </div>
+
+</div>
+
+    <div id="final-result-screen" class="hidden">
+        <h1>Game Over</h1>
+        <!-- ランキング表示用のコンテナを追加 -->
+        <div class="ranking-container">
+            <!-- 最終スコアの順位リストがここに入ります -->
+            <div id="final-scores"></div>
+        </div>
+        <!-- ボタンを配置するコンテナを追加 -->
+        <div class="button-container">
+            <button id="return-to-title-button">タイトルへ戻る</button>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

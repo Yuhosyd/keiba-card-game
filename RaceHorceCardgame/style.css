@@ -1,0 +1,555 @@
+/* style.css (整頓版) */
+
+/* ==================================== */
+/* === 1. 基本設定と変数定義 === */
+/* ==================================== */
+
+/* Google Fontsのインポート */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@400;700&display=swap');
+
+/* CSS変数の定義 */
+:root {
+    --bg-color: #282c34;                 /* 背景色: 暗い灰色 */
+    --surface-color: #3c4049;            /* 表面色: やや明るい暗い灰色 */
+    --primary-text-color: #e0e0e0;       /* 主要テキスト色: 明るい灰色 */
+    --secondary-text-color: #a0a0a0;     /* 副次テキスト色: 中程度の灰色 */
+    --border-color: #555;                /* ボーダー色: 暗い灰色 */
+    --accent-color-primary: #4e9a6a;     /* アクセント色1: 落ち着いた緑 */
+    --accent-color-secondary: #c78f54;   /* アクセント色2: 落ち着いた茶色 */
+    --selected-color: #ffd700;           /* 選択色: ゴールド */
+    --player-highlight-color: rgba(78, 154, 106, 0.2); /* プレイヤー強調色: 薄い緑 */
+}
+
+/* body要素の全体スタイル設定 */
+body {
+    font-family: 'Roboto', 'Noto Sans JP', sans-serif; /* フォントファミリー */
+    background-color: var(--bg-color);
+    color: var(--primary-text-color);
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 画面全体のスクロールを禁止 */
+}
+
+/* 共通ユーティリティクラス */
+.hidden {
+    display: none !important;
+}
+
+/* 水平線のスタイル */
+hr {
+    border: none;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 15px 0;
+}
+
+/* フェードインアニメーション */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ==================================== */
+/* === 2. 画面レイアウトとコンポーネント === */
+/* ==================================== */
+
+/* タイトル画面と最終結果画面の共通スタイル */
+#title-screen, #final-result-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background: linear-gradient(rgba(40, 44, 52, 0.8), rgba(40, 44, 52, 1)), url('images/dark-grass.png');
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* タイトル画面のヘッダーテキスト */
+#title-screen h1, #final-result-screen h1 {
+    font-size: 4.5em;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+    margin-bottom: 10px;
+}
+
+/* タイトル画面の段落テキスト */
+#title-screen p, #final-result-screen p {
+    font-size: 1.2em;
+    color: var(--primary-text-color);
+    max-width: 500px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+#final-result-screen p {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* ゲーム開始ボタン */
+#title-screen #game-start-button {
+    font-size: 1.5em;
+    padding: 15px 40px;
+    transform: scale(1);
+    transition: transform 0.2s ease-out, background-color 0.3s;
+}
+
+#title-screen #game-start-button:hover {
+    transform: scale(1.05);
+}
+
+/* メインゲーム画面のレイアウト (3カラム) */
+#game-screen {
+    display: grid;
+    grid-template-columns: 1fr 380px; /* 中央 | 右 */
+    gap: 20px;
+    height: 100vh;
+    padding: 20px;
+    padding-left: 40px; /* 左側にボタンが見えるよう余白を調整 */
+    box-sizing: border-box;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* 各カラムの共通スタイル */
+#left-column, #center-column, #right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    max-height: calc(100vh - 40px);
+}
+
+/* 左カラム（プレイヤーステータス） */
+#left-column {
+    position: absolute; /* レイアウトから切り離し、絶対位置指定に */
+    top: 0;
+    left: 0;
+    height: 100vh; /* 高さを画面全体に */
+    background-color: var(--surface-color);
+    border-radius: 0 10px 10px 0; /* 左側の角丸をなくす */
+    padding: 15px;
+    z-index: 1000; /* 他の要素より手前に表示 */
+    transform: translateX(-100%); /* 普段は画面外に隠す */
+    transition: transform 0.3s ease-in-out;
+}
+
+#left-column.is-open {
+    transform: translateX(0); /* ドロワーが開いた時のスタイル */
+    box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+}
+
+/* ドロワー開閉ボタン */
+#drawer-toggle-button {
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 60px;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    border-radius: 0 5px 5px 0;
+    border: none;
+    cursor: pointer;
+    background-color: var(--surface-color);
+    color: var(--primary-text-color);
+}
+
+#drawer-toggle-button:hover {
+    background-color: var(--accent-color-primary);
+}
+
+/* プレイヤーリストコンテナ */
+#player-list-container {
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.player-status-entry {
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    font-size: 15px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.player-status-entry.is-player {
+    background-color: var(--player-highlight-color);
+    font-weight: bold;
+    color: var(--selected-color);
+}
+
+/* 中央カラム（メイン画面） */
+#center-column {
+    text-align: center;
+}
+
+.game-title { margin: 0; }
+#turn-display { font-size: 1.2em; color: var(--secondary-text-color); }
+#corse-title { color: var(--selected-color); font-size: 1.5em; margin: 0; }
+
+#battle-field {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#result-area { font-size: 1.6em; color: var(--selected-color); min-height: 1.6em; }
+.game-over-buttons { margin-top: auto; }
+
+/* バトルカードエリア */
+.battle-card-area .horse-number {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--selected-color);
+    margin-bottom: 2px;
+}
+
+.battle-card-area .player-name {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+
+/* 右カラム（プレイヤー操作系） - ドロワー式に修正 */
+#right-column {
+    position: absolute; /* レイアウトから切り離し、絶対位置指定に */
+    top: 0;
+    right: 0; /* 右端に配置 */
+    height: 100vh; /* 高さを画面全体に */
+    width: 300px; /* ★ Barnの幅。必要に応じて調整してください */
+    background-color: var(--surface-color);
+    border-radius: 10px 0 0 10px; /* 右側の角丸をなくし、左側を丸くする */
+    padding: 15px;
+    z-index: 1000; /* 他の要素より手前に表示 */
+    transform: translateX(100%); /* 普段は画面外に隠す */
+    transition: transform 0.3s ease-in-out;
+    display: flex; /* flexbox を維持 */
+    flex-direction: column; /* flex-direction を維持 */
+    gap: 20px; /* gap を維持 */
+    max-height: calc(100vh - 40px); /* max-height を維持 */
+    /* overflow-y: auto; これは不要かも */
+}
+
+#right-column.is-open-right { /* 新しいクラス名でドロワーが開いた時のスタイルを定義 */
+    transform: translateX(0); /* ドロワーが開いた時のスタイル */
+    box-shadow: -5px 0 15px rgba(0,0,0,0.3); /* 左側への影 */
+}
+
+/* 右ドロワー開閉ボタン */
+#drawer-toggle-button-right {
+    position: absolute; /* 親要素(#right-column)を基準に配置 */
+    top: 50%;
+    left: -25px; /* ここを修正: rightからleftに変更 */
+    transform: translateY(-50%);
+    width: 25px;
+    height: 60px;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    border-radius: 5px 0 0 5px; /* 左側の角丸 */
+    border: none;
+    cursor: pointer;
+    background-color: var(--surface-color);
+    color: var(--primary-text-color);
+    z-index: 1001; /* ドロワーより手前に表示 */
+}
+
+#drawer-toggle-button-right:hover {
+    background-color: var(--accent-color-primary);
+}
+
+#drawer-toggle-button-right:hover {
+    background-color: var(--accent-color-primary);
+}
+
+/*?????*/
+#game-screen {
+    display: grid;
+    /* grid-template-columns: 1fr 380px;  中央 | 右 の代わりに */
+    grid-template-columns: 1fr; /* 中央カラムのみの幅にするか、調整してください */
+    /* padding-right も調整が必要になる場合があります。 */
+    gap: 20px;
+    height: 100vh;
+    padding: 20px;
+    padding-left: 40px; /* 左側にボタンが見えるよう余白を調整 */
+    padding-right: 40px; /* 右側もボタンが見えるよう余白を調整 */
+    box-sizing: border-box;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#score-preview-container {
+    background-color: var(--bg-color);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#score-preview-container h3 { margin: 0 0 10px 0; }
+#score-preview { font-size: 3em; font-weight: bold; color: var(--accent-color-primary); }
+
+.player-hand-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.hand-title-area { padding: 0 5px; }
+
+#player-hand {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 15px;
+    background-color: var(--bg-color);
+    border-radius: 8px;
+    align-content: flex-start;
+    transition: opacity 0.3s;
+}
+
+/* ==================================== */
+/* === 3. 汎用コンポーネントスタイル === */
+/* ==================================== */
+
+/* カードのスタイル */
+.card {
+    width: 100px;
+    height: 140px;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    border: 2px solid transparent;
+    position: relative; /* imgを絶対位置で配置するために必要 */
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    /* ★追加・修正: 顔を拡大表示するための transform */
+    transform: scale(4.2); 
+    transform-origin: center 10%; /* 拡大の基準点を顔の位置に合わせる */
+    transition: transform 0.2s ease-in-out; /* ホバー時のアニメーションを考慮 */
+}
+
+
+/* バトルフィールドのカード画像コンテナとプレースホルダー */
+.card-image-container {
+    width: 60px;
+    height: 95px;
+    overflow: hidden;
+    border-radius: 8px;
+    position: relative; /* imgを絶対位置で配置するために必要 */
+}
+
+.card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-color);
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--secondary-text-color);
+}
+
+.card.injured {
+    filter: grayscale(100%);
+    opacity: 0.5;
+    cursor: not-allowed !important;
+}
+
+
+.battle-card-area .card-image-container {
+    width: 60px; /* 必要に応じて調整 */
+    height: 95px; /* 必要に応じて調整 */
+    overflow: hidden; /* コンテナからはみ出る部分を隠す */
+    border-radius: 8px;
+}
+
+.battle-card-area .card-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    /* ★追加・修正: 顔を拡大表示するための transform */
+    transform: scale(4.2); 
+    transform-origin: center 10%; /* 拡大の基準点を顔の位置に合わせる */
+}
+
+
+/* ボタンの共通スタイル */
+button {
+    background-color: var(--accent-color-primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    margin: 5px;
+}
+
+button:hover { background-color: #5bb87d; }
+
+#pass-button { background-color: var(--secondary-text-color); }
+#pass-button:hover { background-color: #b0b0b0; }
+
+#end-game-button, #return-to-title-button {
+    background-color: var(--accent-color-secondary);
+}
+#end-game-button:hover, #return-to-title-button:hover {
+    background-color: #d69f66;
+}
+
+/* 「全着順を見る」ボタンのスタイル */
+#toggle-ranking-button {
+    background-color: var(--surface-color);
+    color: var(--primary-text-color);
+    padding: 8px 16px;
+    font-size: 14px;
+    margin-left: 10px;
+}
+#toggle-ranking-button:hover {
+    background-color: var(--border-color);
+}
+
+/* ==================================== */
+/* === 4. インタラクションと状態変化 === */
+/* ==================================== */
+
+/* ターン中のカード操作スタイル */
+body:not(.turn-over) .card { cursor: pointer; }
+
+body:not(.turn-over) .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.card.selected {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 0 15px var(--selected-color);
+    border-color: var(--selected-color);
+}
+
+/* ターン終了時の手札操作不能スタイル */
+body.turn-over #player-hand {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* ボタンの表示/非表示制御 */
+.game-over-buttons #play-button,
+.game-over-buttons #pass-button {
+    display: inline-block;
+}
+.game-over-buttons #startButton {
+    display: none;
+}
+body.turn-over .game-over-buttons #play-button,
+body.turn-over .game-over-buttons #pass-button {
+    display: none;
+}
+body.turn-over .game-over-buttons #startButton {
+    display: inline-block;
+}
+
+/* ==================================== */
+/* === 5. レスポンシブ対応 === */
+/* ==================================== */
+
+@media (max-width: 1200px) {
+    body {
+        overflow: auto;
+    }
+    #game-screen {
+        grid-template-columns: 1fr; /* 1カラム表示に変更 */
+        height: auto;
+        overflow-y: auto;
+        padding-left: 20px; /* 全体のpaddingを調整 */
+        padding-right: 20px;
+    }
+    #left-column, #right-column, #center-column {
+        position: relative; /* レスポンシブではrelativeに戻す */
+        transform: translateX(0) !important; /* ドロワーを開いた状態を維持 */
+        box-shadow: none !important; /* 影をなくす */
+        height: auto; /* 高さを自動調整 */
+        max-height: none; /* max-heightをリセット */
+        border-radius: 10px; /* 角丸を統一 */
+    }
+    #left-column {
+        order: 1; /* 左カラムを最初に表示 */
+        padding-right: 15px; /* 右パディングを追加 */
+    }
+    #center-column {
+        order: 2; /* 中央カラムを次に表示 */
+    }
+    #right-column {
+        order: 3; /* 右カラムを最後に表示 */
+        padding-left: 15px; /* 左パディングを追加 */
+    }
+    /* ドロワーボタンは非表示にするか、位置を調整 */
+    #drawer-toggle-button, #drawer-toggle-button-right {
+    display: none;
+    }
+}
+
+/* ==================================== */
+/* === 6. 全着順リスト表示スタイル === */
+/* ==================================== */
+#full-ranking-container {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(40, 44, 52, 0.95);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    z-index: 990;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    max-width: 400px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: left;
+}
+
+#full-ranking-container h3 {
+    text-align: center;
+    margin-top: 0;
+    color: var(--selected-color);
+}
+
+#full-ranking-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+#full-ranking-list li {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+#full-ranking-list li:last-child {
+    border-bottom: none;
+}
